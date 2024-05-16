@@ -3,6 +3,16 @@
 
 #include "philosophers.h"
 
+int ft_strlen(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
 ssize_t	get_current_time(void)
 {
 	struct timeval	time;
@@ -37,4 +47,22 @@ void	ft_usleep(ssize_t wait_time)
 	{
 		usleep(125);
 	}
+}
+
+char	*ft_strdup(char *s)
+{
+	int		i;
+	char	*dup_string;
+
+	dup_string = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
+	if (dup_string == NULL)
+		return (NULL);
+	i = 0;
+	while (s[i] != '\0')
+	{
+		dup_string[i] = s[i];
+		i++;
+	}
+	dup_string[i] = '\0';
+	return (dup_string);
 }

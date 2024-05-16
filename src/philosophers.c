@@ -13,7 +13,7 @@ void create_threads(t_philosopher *philosophers, t_program *program)
 		philosophers[i].pid = fork();
 		if (philosophers[i].pid == 0)
 		{
-			routine()
+			routine(&philosophers[i]);
 		}
 	}
 }
@@ -30,9 +30,9 @@ int main(int argc, char *argv[])
 		return (free(program), 2);
 	philosophers = malloc(sizeof(t_philosopher) * program->num_philosophers);
 	if (!philosophers)
-		return (1);
+		return (free(program), 1);
 	init_philosophers(philosophers, program);
 	if (init_semaphores(program))
-		return (free_philosophers(philosophers), 2);
-
+		return (2);
+	create_threads(philosophers, program);
 }

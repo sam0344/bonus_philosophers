@@ -6,7 +6,7 @@ HEADERS	:= -I ./include
 SRCDIR := src
 OBJDIR := ./obj
 
-SRCS  =
+SRCS  = ft_utils.c init.c philo_routine.c philosophers.c printing.c linked_list.c
 # BSRCS =
 
 OBJS := $(SRCS:%.c=$(OBJDIR)/%.o)

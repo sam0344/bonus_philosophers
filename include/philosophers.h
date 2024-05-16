@@ -45,8 +45,8 @@ typedef struct s_philosopher
 {
 	t_program			*program;
 	pid_t				pid;
-	size_t				last_meal_time;
-	size_t				start_time;
+	ssize_t				last_meal_time;
+	ssize_t				start_time;
 	int					id;
 	int					meals_eaten;
 }	t_philosopher;
@@ -58,4 +58,7 @@ ssize_t	get_current_time(void);
 void	*printable_thread(void *arg);
 void	ft_usleep(ssize_t wait_time);
 int	ft_atoi(char *num);
+void	add_to_print(t_philosopher *philosopher, char *str);
+void	routine(t_philosopher	*philosopher);
+char	*ft_strdup(char *s);
 #endif

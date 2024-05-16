@@ -43,6 +43,7 @@ int init_semaphores(t_program *program)
 	program->stop_print_sem = sem_open("stop_print_sem", O_CREAT, 0644, 1);
 	if (program->stop_print_sem == SEM_FAILED)
 		return (write(2, "failed init stop print semaphore\n", 34));
+	return (0);
 }
 
 void init_philosophers(t_philosopher *philosophers, t_program *program)

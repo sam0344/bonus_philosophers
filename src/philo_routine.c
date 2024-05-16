@@ -9,12 +9,13 @@ void check_end_philo(void *arg)
 	philosopher = (t_philosopher *)arg;
 	while (1)
 	{
-		if (get_current_time() - philosopher->last_meal_time > philosopher->program->time_to_die)
+		if (get_current_time() - philosopher->last_meal_time > (ssize_t)philosopher->program->time_to_die)
 		{
 			sem_post(philosopher->program->stop_program_sem);
 			sem_wait(philosopher->program->stop_print_sem);
 			philosopher->program->stop_print = true;
 			sem_post(philosopher->program->stop_print_sem);
+			printf("died\n");
 			break ;
 		}
 		if (philosopher->program->time_to_eat != -1 && philosopher->meals_eaten > philosopher->program->num_times_to_eat)
@@ -23,9 +24,10 @@ void check_end_philo(void *arg)
 			sem_wait(philosopher->program->stop_print_sem);
 			philosopher->program->stop_print = true;
 			sem_post(philosopher->program->stop_print_sem);
+			printf("enough eaten\n");
 			break ;
 		}
-		usleep(10);
+		usleep(100);
 	}
 }
 
@@ -64,11 +66,9 @@ static void	think(t_philosopher *philosopher)
 // 	return (pthread_mutex_unlock(program->dead_lock), false);
 // }
 
-void	*routine(void *arg)
+void	routine(t_philosopher	*philosopher)
 {
-	t_philosopher	*philosopher;
 
-	philosopher = (t_philosopher *)arg;
 	// if (philosopher->id % 2 == 0)
 	// 	ft_usleep(philosopher->program->time_to_eat);
 	// else if (philosopher->id == philosopher->program->num_philosophers)
@@ -82,5 +82,5 @@ void	*routine(void *arg)
 		// 	break ;
 		think(philosopher);
 	}
-	return (arg);
+	// return (arg);
 }
