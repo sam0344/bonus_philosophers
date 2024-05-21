@@ -3,12 +3,15 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+# include <sys/types.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <string.h>
 # include <stdbool.h>
 # include <semaphore.h>
 # include <fcntl.h>
+# include <signal.h>
+#
 typedef struct s_list
 {
 	void			*content;
@@ -43,6 +46,7 @@ typedef struct s_program
 
 typedef struct s_philosopher
 {
+	pthread_t			death_thread;
 	t_program			*program;
 	pid_t				pid;
 	ssize_t				last_meal_time;
