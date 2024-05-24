@@ -1,12 +1,16 @@
 NAME	:= philosophers
 CC		:=	cc
-CFLAGS	:= -Wextra -Wall -Werror -g
+CFLAGS	:= -Wextra -Wall -Werror -g -fsanitize=thread
 
 HEADERS	:= -I ./include
-SRCDIR := src
+# SRCDIR := src
+SRCDIR := src2
+
 OBJDIR := ./obj
 
-SRCS  = ft_utils.c init.c philo_routine.c philosophers.c printing.c linked_list.c
+# SRCS  = ft_utils.c init.c philo_routine.c philosophers.c printing.c linked_list.c
+SRCS  = utils.c init.c philo_routine.c philosophers.c
+
 # BSRCS =
 
 OBJS := $(SRCS:%.c=$(OBJDIR)/%.o)

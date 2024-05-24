@@ -6,12 +6,11 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:55:30 by saleunin          #+#    #+#             */
-/*   Updated: 2024/05/21 14:47:07 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:31:42 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers2.h"
-
 
 int ft_strlen(char *str)
 {
@@ -52,7 +51,6 @@ void	ft_usleep(ssize_t wait_time)
 {
 	ssize_t	start_time;
 
-
 	start_time = get_current_time();
 	while (get_current_time() - start_time < wait_time)
 		usleep(125);
@@ -64,4 +62,3 @@ void ft_error(char *str, int exit_code)
 		write(2, str, ft_strlen(str));
 	exit(exit_code);
 }
-

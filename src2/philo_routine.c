@@ -20,24 +20,14 @@ void *check_end_philo(void *arg)
 		if (get_current_time() - philosopher->last_meal_time > (ssize_t)philosopher->time_to_die)
 		{
 			sem_wait(philosopher->stop_print_sem);
+			printf("start time:%ld, last meal time:%ld\n", get_current_time() - philosopher->start_time, get_current_time() - philosopher->last_meal_time);
 			printf("%ld %d %s\n", \
 					get_current_time() - philosopher->start_time, philosopher->id, "died");
-			philosopher->stop = true;
-			free(philosopher->pid);
+			// philosopher->stop = true;
 			sem_close(philosopher->forks_sem);
 			sem_close(philosopher->stop_print_sem);
-			free(philosopher);
-			exit(1);
-		}
-		if (philosopher->num_times_to_eat != -1 && philosopher->meals_eaten >= philosopher->num_times_to_eat)
-		{
-			philosopher->stop = true;
-			/* printf("%ld %d %s\n", \
-					get_current_time() - philosopher->start_time, philosopher->id, "eaten enough"); */
-			free(philosopher->pid);
-			sem_close(philosopher->forks_sem);
-			sem_close(philosopher->stop_print_sem);
-			exit(0);
+			sem_post(philosopher->stop_program_sem);
+			break ;
 		}
 		usleep(100);
 	}
@@ -50,14 +40,12 @@ static void	eat(t_philosopher *philosopher)
 	print_text(philosopher, "has taken a fork");
 	sem_wait(philosopher->forks_sem);
 	print_text(philosopher, "has taken a fork");
-	// if (philosopher->stop)
-	// 		return ;
+	philosopher->meals_eaten++;
 	print_text(philosopher, "is eating");
 	philosopher->last_meal_time = get_current_time();
 	ft_usleep(philosopher->time_to_eat);
 	sem_post(philosopher->forks_sem);
 	sem_post(philosopher->forks_sem);
-	philosopher->meals_eaten++;
 }
 
 static void	think(t_philosopher *philosopher)
@@ -77,18 +65,24 @@ void	routine(t_philosopher	*philosopher)
 	philosopher->last_meal_time = philosopher->start_time;
 	pthread_create(&philosopher->death_thread, NULL, check_end_philo, philosopher);
 	pthread_detach(philosopher->death_thread);
+	if (philosopher->id % 2 == 0)
+		ft_usleep(1);
 	while (!philosopher->stop)
 	{
+
 		eat(philosopher);
-		if (philosopher->stop)
+		if (philosopher->num_times_to_eat != -1 && philosopher->meals_eaten >= philosopher->num_times_to_eat)
+		{
+			print_text(philosopher, "has eaten enough");
 			break ;
+		}
 		print_text(philosopher, "is sleeping");
-		if (philosopher->stop)
-			break ;
 		ft_usleep(philosopher->time_to_sleep);
 		think(philosopher);
-
 	}
+	ft_usleep(philosopher->time_to_eat);
+	sem_post(philosopher->stop_program_sem);
 	// pthread_join(philosopher->death_thread, NULL);
 	// return (arg);
 }
+

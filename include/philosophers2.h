@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:51:13 by saleunin          #+#    #+#             */
-/*   Updated: 2024/05/21 14:46:06 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/05/24 15:36:32 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ typedef struct s_philosopher
 	int				num_times_to_eat;
 	sem_t			*forks_sem;
 	sem_t			*stop_print_sem;
+	sem_t			*stop_program_sem;
+	sem_t			*meal_lock_sem;
 	pthread_t		death_thread;
 	pid_t			*pid;
 	ssize_t			last_meal_time;
@@ -52,4 +54,6 @@ int	ft_atoi(char *num);
 ssize_t	get_current_time(void);
 void	routine(t_philosopher	*philosopher);
 void ft_usleep(ssize_t time_to_sleep);
+char	*ft_itoa(int n);
+char	*ft_strjoin(char const *s1, char const *s2);
 #endif
