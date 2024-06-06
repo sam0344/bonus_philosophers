@@ -1,6 +1,6 @@
 NAME	:= philosophers
 CC		:=	cc
-CFLAGS	:= -Wextra -Wall -Werror -g -fsanitize=thread
+CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
 # SRCDIR := src
@@ -9,7 +9,7 @@ SRCDIR := src2
 OBJDIR := ./obj
 
 # SRCS  = ft_utils.c init.c philo_routine.c philosophers.c printing.c linked_list.c
-SRCS  = utils.c init.c philo_routine.c philosophers.c
+SRCS  = init.c philo_routine.c philosophers.c utils.c utils2.c free.c
 
 # BSRCS =
 
