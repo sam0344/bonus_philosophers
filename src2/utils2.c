@@ -50,11 +50,6 @@ char	*ft_itoa(int n)
 	isnegative = 1;
 	if (n < 0)
 	{
-		if (n == -2147483648)
-		{
-			ft_strlcpy(str_n, "-2147483648", 12);
-			return (str_n);
-		}
 		isnegative = -1;
 		n *= -1;
 	}

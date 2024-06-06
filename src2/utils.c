@@ -6,13 +6,13 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:55:30 by saleunin          #+#    #+#             */
-/*   Updated: 2024/05/21 16:31:42 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/06 13:51:08 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers2.h"
 
-int ft_strlen(char *str)
+int ft_strlen(const char *str)
 {
 	int i;
 
@@ -56,9 +56,10 @@ void	ft_usleep(ssize_t wait_time)
 		usleep(125);
 }
 
-void ft_error(char *str, int exit_code)
+void ft_error(char *str, int exit_code, t_philosopher *philosopher)
 {
 	if (str)
 		write(2, str, ft_strlen(str));
+	free_philosophers(philosopher);
 	exit(exit_code);
 }
