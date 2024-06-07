@@ -9,7 +9,7 @@ SRCDIR := src2
 OBJDIR := ./obj
 
 # SRCS  = ft_utils.c init.c philo_routine.c philosophers.c printing.c linked_list.c
-SRCS  = init.c philo_routine.c philosophers.c utils.c utils2.c free.c
+SRCS  = init.c philo_routine.c philosophers.c utils.c utils2.c free.c linked_list.c printing.c
 
 # BSRCS =
 

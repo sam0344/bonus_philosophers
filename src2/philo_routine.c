@@ -2,13 +2,13 @@
 
 #include "philosophers2.h"
 
-void print_text(t_philosopher *philosopher, char *str)
-{
-	sem_wait(philosopher->stop_print_sem);
-	if (!philosopher->stop)
-		printf("%ld %d %s\n", get_current_time() - philosopher->start_time, philosopher->id, str);
-	sem_post(philosopher->stop_print_sem);
-}
+// void print_text(t_philosopher *philosopher, char *str)
+// {
+// 	sem_wait(philosopher->stop_print_sem);
+// 	if (!philosopher->stop)
+// 		printf("%ld %d %s\n", get_current_time() - philosopher->start_time, philosopher->id, str);
+// 	sem_post(philosopher->stop_print_sem);
+// }
 
 void *check_end_philo(void *arg)
 {
@@ -16,12 +16,16 @@ void *check_end_philo(void *arg)
 	int	i;
 
 	philosopher = (t_philosopher *)arg;
-	while (!philosopher->stop)
+	while (1)
 	{
+		sem_wait(philosopher->philo_sem);
+		// printf("here2\n");
+		if (philosopher->stop)
+			break ;
 		if (get_current_time() - philosopher->last_meal_time > (ssize_t)philosopher->time_to_die)
 		{
+			sem_post(philosopher->stop_program_sem);
 			sem_wait(philosopher->stop_print_sem);
-			// printf("start time:%ld, last meal time:%ld\n", get_current_time() - philosopher->start_time, get_current_time() - philosopher->last_meal_time);
 			printf("%ld %d %s\n", \
 					get_current_time() - philosopher->start_time, philosopher->id, "died");
 			i = -1;
@@ -31,23 +35,57 @@ void *check_end_philo(void *arg)
 		}
 		if (philosopher->num_times_to_eat != -1 && philosopher->meals_eaten >= philosopher->num_times_to_eat)
 		{
+			philosopher->stop = true;
 			sem_post(philosopher->amt_philos_eat_enough_sem);
 			break ;
 		}
-		usleep(100);
+		sem_post(philosopher->philo_sem);
+		usleep(500);
 	}
+	philosopher->moniter_thread_stopped = true;
+	sem_post(philosopher->philo_sem);
 	return (arg);
 }
+
+void *print_printable_thread(void *arg)
+{
+	t_philosopher	*philosopher;
+	t_printable		*printable;
+
+	philosopher = (t_philosopher *)arg;
+	while (1)
+	{
+		sem_wait(philosopher->philo_sem);
+		if (philosopher->stop)
+			break ;
+		if (philosopher->printable_head)
+		{
+			printable = philosopher->printable_head->content;
+			ft_lst_remove_first_node(&philosopher->printable_head);
+			sem_post(philosopher->philo_sem);
+			printable->time_stamp = get_current_time() - philosopher->start_time;
+			printf("%zd %d %s\n", printable->time_stamp, printable->id, printable->str);
+		}
+		else
+			sem_post(philosopher->philo_sem);
+		usleep(100);
+	}
+	sem_post(philosopher->philo_sem);
+	return (arg);
+}
+
 
 static void	eat(t_philosopher *philosopher)
 {
 	sem_wait(philosopher->forks_sem);
-	print_text(philosopher, "has taken a fork");
+	add_to_printable(philosopher, "has taken a fork");
 	sem_wait(philosopher->forks_sem);
-	print_text(philosopher, "has taken a fork");
+	add_to_printable(philosopher, "has taken a fork");
+	add_to_printable(philosopher, "is eating");
+	sem_wait(philosopher->philo_sem);
 	philosopher->meals_eaten++;
-	print_text(philosopher, "is eating");
 	philosopher->last_meal_time = get_current_time();
+	sem_post(philosopher->philo_sem);
 	ft_usleep(philosopher->time_to_eat);
 	sem_post(philosopher->forks_sem);
 	sem_post(philosopher->forks_sem);
@@ -55,7 +93,7 @@ static void	eat(t_philosopher *philosopher)
 
 static void	think(t_philosopher *philosopher)
 {
-	print_text(philosopher, "is thinking");
+	add_to_printable(philosopher, "is thinking");
 	if (philosopher->stop)
 		return ;
 	if (philosopher->num_philosophers % 2 == 1)
@@ -71,26 +109,42 @@ void *stop_philo_died(void *arg)
 
 	philosopher = (t_philosopher *)arg;
 	sem_wait(philosopher->stop_program_sem);
-	philosopher->stop = true;
 	sem_post(philosopher->stop_program_sem);
+	sem_wait(philosopher->philo_sem);
+	philosopher->stop = true;
+	sem_post(philosopher->philo_sem);
+	while (1)
+	{
+		sem_wait(philosopher->philo_sem);
+		if (philosopher->moniter_thread_stopped)
+		{
+			sem_post(philosopher->philo_sem);
+			break ;
+		}
+		sem_post(philosopher->philo_sem);
+	}
+	free_philosophers(philosopher);
 	return (arg);
 }
 
 void	routine(t_philosopher	*philosopher)
 {
 	pthread_t check_philo_died;
+	pthread_t	printing_thread;
 
 	philosopher->last_meal_time = philosopher->start_time;
 	pthread_create(&philosopher->death_thread, NULL, check_end_philo, philosopher);
 	pthread_detach(philosopher->death_thread);
 	pthread_create(&check_philo_died, NULL, stop_philo_died, philosopher);
 	pthread_detach(check_philo_died);
+	pthread_create(&printing_thread, NULL, print_printable_thread, philosopher);
+	pthread_detach(printing_thread);
 	if (philosopher->id % 2 == 0)
 		ft_usleep(philosopher->time_to_sleep);
 	while (!philosopher->stop)
 	{
 		eat(philosopher);
-		print_text(philosopher, "is sleeping");
+		add_to_printable(philosopher, "is sleeping");
 		ft_usleep(philosopher->time_to_sleep);
 		think(philosopher);
 	}

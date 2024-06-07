@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:55:30 by saleunin          #+#    #+#             */
-/*   Updated: 2024/06/06 13:51:08 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/07 13:32:36 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,25 @@ void ft_error(char *str, int exit_code, t_philosopher *philosopher)
 		write(2, str, ft_strlen(str));
 	free_philosophers(philosopher);
 	exit(exit_code);
+}
+
+
+char	*ft_strdup(const char *s)
+{
+	int		i;
+	char	*dup_string;
+
+	if (!s)
+		return (NULL);
+	dup_string = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
+	if (dup_string == NULL)
+		return (NULL);
+	i = 0;
+	while (s[i] != '\0')
+	{
+		dup_string[i] = s[i];
+		i++;
+	}
+	dup_string[i] = '\0';
+	return (dup_string);
 }
