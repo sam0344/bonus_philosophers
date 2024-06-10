@@ -10,7 +10,7 @@
 // 	sem_post(philosopher->stop_print_sem);
 // }
 
-void *check_end_philo(void *arg)
+void *monitor_philo(void *arg)
 {
 	t_philosopher *philosopher;
 	int	i;
@@ -46,35 +46,6 @@ void *check_end_philo(void *arg)
 	sem_post(philosopher->philo_sem);
 	return (arg);
 }
-
-void *print_printable_thread(void *arg)
-{
-	t_philosopher	*philosopher;
-	t_printable		*printable;
-
-	philosopher = (t_philosopher *)arg;
-	while (1)
-	{
-		sem_wait(philosopher->philo_sem);
-		if (philosopher->stop)
-			break ;
-		if (philosopher->printable_head)
-		{
-			printable = philosopher->printable_head->content;
-			ft_lst_remove_first_node(&philosopher->printable_head);
-			sem_post(philosopher->philo_sem);
-			printable->time_stamp = get_current_time() - philosopher->start_time;
-			printf("%zd %d %s\n", printable->time_stamp, printable->id, printable->str);
-		}
-		else
-			sem_post(philosopher->philo_sem);
-		usleep(100);
-	}
-	sem_post(philosopher->philo_sem);
-	return (arg);
-}
-
-
 static void	eat(t_philosopher *philosopher)
 {
 	sem_wait(philosopher->forks_sem);
@@ -112,18 +83,8 @@ void *stop_philo_died(void *arg)
 	sem_post(philosopher->stop_program_sem);
 	sem_wait(philosopher->philo_sem);
 	philosopher->stop = true;
+	philosopher->check_death_thread_stopped = true;
 	sem_post(philosopher->philo_sem);
-	while (1)
-	{
-		sem_wait(philosopher->philo_sem);
-		if (philosopher->moniter_thread_stopped)
-		{
-			sem_post(philosopher->philo_sem);
-			break ;
-		}
-		sem_post(philosopher->philo_sem);
-	}
-	free_philosophers(philosopher);
 	return (arg);
 }
 
@@ -133,17 +94,33 @@ void	routine(t_philosopher	*philosopher)
 	pthread_t	printing_thread;
 
 	philosopher->last_meal_time = philosopher->start_time;
-	pthread_create(&philosopher->death_thread, NULL, check_end_philo, philosopher);
+	pthread_create(&philosopher->death_thread, NULL, monitor_philo, philosopher);
 	pthread_detach(philosopher->death_thread);
 	pthread_create(&check_philo_died, NULL, stop_philo_died, philosopher);
 	pthread_detach(check_philo_died);
 	pthread_create(&printing_thread, NULL, print_printable_thread, philosopher);
 	pthread_detach(printing_thread);
 	if (philosopher->id % 2 == 0)
-		ft_usleep(philosopher->time_to_sleep);
-	while (!philosopher->stop)
+		ft_usleep(philosopher->time_to_eat);
+	while (1)
 	{
 		eat(philosopher);
+		sem_wait(philosopher->philo_sem);
+		if (philosopher->stop)
+		{
+			sem_post(philosopher->philo_sem);
+			while (1)
+			{
+				sem_wait(philosopher->philo_sem);
+				if (philosopher->moniter_thread_stopped && philosopher->printing_thread_stopped && philosopher->check_death_thread_stopped)
+				{
+					free_philosophers(philosopher);
+					exit(0);
+				}
+				usleep(100);
+			}
+		}
+		sem_post(philosopher->philo_sem);
 		add_to_printable(philosopher, "is sleeping");
 		ft_usleep(philosopher->time_to_sleep);
 		think(philosopher);
@@ -152,4 +129,3 @@ void	routine(t_philosopher	*philosopher)
 	// sem_post(philosopher->stop_program_sem);
 	// return (arg);
 }
-

@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:51:13 by saleunin          #+#    #+#             */
-/*   Updated: 2024/06/07 14:25:23 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/10 14:04:14 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ typedef struct s_philosopher
 	sem_t			*stop_print_sem;
 	sem_t			*stop_program_sem;
 	sem_t			*amt_philos_eat_enough_sem;
-	sem_t			*amt_threads_finished_sem;
 	pthread_t		death_thread;
 	pid_t			*pid;
 	ssize_t			last_meal_time;
@@ -63,6 +62,8 @@ typedef struct s_philosopher
 	t_list			*printable_head;
 	int				meals_eaten;
 	bool			moniter_thread_stopped;
+	bool			check_death_thread_stopped;
+	bool			printing_thread_stopped;
 	bool			stop;
 	//				sem_t			*printable_head_sem;
 }	t_philosopher;
@@ -80,7 +81,7 @@ void free_philosophers(t_philosopher *philosopher);
 void ft_error(char *str, int exit_code, t_philosopher *philosopher);
 char	*ft_strdup(const char *s);
 void add_to_printable(t_philosopher *philosopher, char *str);
-// char	*ft_itoa(int n);
-// char	*ft_strjoin(char const *s1, char const *s2);
-
+char	*ft_itoa(int n);
+char	*ft_strjoin(char const *s1, char const *s2);
+void	*print_printable_thread(void *arg);
 #endif

@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 13:52:17 by saleunin          #+#    #+#             */
-/*   Updated: 2024/06/07 13:45:06 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/10 14:10:21 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,15 @@ void create_processes(t_philosopher *philosophers)
 		// if (!sem_name)
 		// 	ft_error("failed strjoin sem_name\n", 1, philosophers);
 		// printf("sem name:%s\n", sem_name);
-		// unlink(sem_name);
-		if (sem_unlink("philo_sem") < 0)
-			printf("fail unlink\n");
+		// sem_unlink(sem_name);
+		// if (sem_unlink("philo_sem") < 0)
+		// 	printf("fail unlink\n");
 		philosophers->philo_sem = sem_open("philo_sem", O_CREAT | O_EXCL, 0644, 1);
+		if (sem_unlink("philo_sem") < 0)
+			printf("fail unlink \n");
+		// free(sem_name);
 		if (philosophers->philo_sem == SEM_FAILED)
-		{
 			ft_error("failed to open philo_sem\n", 1, philosophers);
-		}
 		philosophers->id = i + 1;
 		philosophers->pid[i] = fork();
 		if (philosophers->pid[i] == 0)
@@ -45,6 +46,7 @@ void create_processes(t_philosopher *philosophers)
 		sem_close(philosophers->philo_sem);
 		i++;
 	}
+	// printf("finished creation\n");
 }
 
 void kill_processes(t_philosopher *philosopher)

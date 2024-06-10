@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 13:03:29 by saleunin          #+#    #+#             */
-/*   Updated: 2024/06/07 11:45:00 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/10 13:56:24 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,9 @@ int init_semaphores(t_philosopher *philosopher)
 	philosopher->stop_program_sem = sem_open("stop_program_sem", O_CREAT, 0644, 0);
 	if (philosopher->stop_program_sem == SEM_FAILED)
 		ft_error("failed init stop program semaphore\n",1, philosopher);
-	sem_unlink("amt_threads_finished_sem");
+	sem_unlink("amt_philos_eat_enough_sem");
 	philosopher->amt_philos_eat_enough_sem = sem_open("amt_philos_eat_enough_sem", O_CREAT, 0644, 0);
 	if (philosopher->amt_philos_eat_enough_sem == SEM_FAILED)
-		ft_error("failed init stop program semaphore\n",1, philosopher);
-	sem_unlink("amt_threads_finished_sem");
-	philosopher->amt_threads_finished_sem = sem_open("amt_threads_finished_sem", O_CREAT, 0644, 0);
-	if (philosopher->amt_threads_finished_sem == SEM_FAILED)
 		ft_error("failed init stop program semaphore\n",1, philosopher);
 	return (0);
 }
