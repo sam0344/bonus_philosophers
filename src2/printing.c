@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 14:25:07 by saleunin          #+#    #+#             */
-/*   Updated: 2024/06/10 14:06:37 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/10 15:54:53 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,10 @@ void *print_printable_thread(void *arg)
 				break ;
 			}
 			sem_post(philosopher->philo_sem);
+			sem_wait(philosopher->printf_sem);
 			printable->time_stamp = get_current_time() - philosopher->start_time;
-			printf("%zd %d %s\n", printable->time_stamp, printable->id, printable->str);
+			printf("%zd %d %s\n", printable->time_stamp, printable->id, printable->str);\
+			sem_post(philosopher->printf_sem);
 			free(printable->str);
 			free(printable);
 		}

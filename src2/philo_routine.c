@@ -4,10 +4,10 @@
 
 // void print_text(t_philosopher *philosopher, char *str)
 // {
-// 	sem_wait(philosopher->stop_print_sem);
+// 	sem_wait(philosopher->printf_sem);
 // 	if (!philosopher->stop)
 // 		printf("%ld %d %s\n", get_current_time() - philosopher->start_time, philosopher->id, str);
-// 	sem_post(philosopher->stop_print_sem);
+// 	sem_post(philosopher->printf_sem);
 // }
 
 void *monitor_philo(void *arg)
@@ -25,7 +25,7 @@ void *monitor_philo(void *arg)
 		if (get_current_time() - philosopher->last_meal_time > (ssize_t)philosopher->time_to_die)
 		{
 			sem_post(philosopher->stop_program_sem);
-			sem_wait(philosopher->stop_print_sem);
+			sem_wait(philosopher->printf_sem);
 			printf("%ld %d %s\n", \
 					get_current_time() - philosopher->start_time, philosopher->id, "died");
 			i = -1;

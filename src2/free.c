@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 13:24:07 by saleunin          #+#    #+#             */
-/*   Updated: 2024/06/10 13:56:29 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/10 15:53:56 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 void close_semaphores(t_philosopher *philosopher)
 {
 	sem_unlink("forks_sem");
-	sem_unlink("stop_print_sem");
+	sem_unlink("printf_sem");
 	sem_unlink("stop_program_sem");
 	sem_unlink("amt_philos_eat_enough_sem");
 	if (philosopher->forks_sem)
 		sem_close(philosopher->forks_sem);
-	if (philosopher->stop_print_sem)
-		sem_close(philosopher->stop_print_sem);
+	if (philosopher->printf_sem)
+		sem_close(philosopher->printf_sem);
 	if (philosopher->amt_philos_eat_enough_sem)
 		sem_close(philosopher->amt_philos_eat_enough_sem);
 	if (philosopher->stop_program_sem)
