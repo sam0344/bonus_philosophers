@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 14:25:07 by saleunin          #+#    #+#             */
-/*   Updated: 2024/06/10 15:54:53 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/10 16:23:04 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,9 @@ void *print_printable_thread(void *arg)
 			ft_lst_remove_first_node(&philosopher->printable_head);
 			if (philosopher->stop)
 			{
-			free(printable->str);
-			free(printable);
-				break ;
+				free(printable->str);
+				free(printable);
+				break;
 			}
 			sem_post(philosopher->philo_sem);
 			sem_wait(philosopher->printf_sem);

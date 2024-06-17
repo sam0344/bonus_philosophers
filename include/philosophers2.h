@@ -6,7 +6,7 @@
 /*   By: saleunin <saleunin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:51:13 by saleunin          #+#    #+#             */
-/*   Updated: 2024/06/10 14:04:14 by saleunin         ###   ########.fr       */
+/*   Updated: 2024/06/10 15:53:02 by saleunin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef struct s_philosopher
 	int				num_times_to_eat;
 	sem_t			*forks_sem;
 	sem_t			*philo_sem;
-	sem_t			*stop_print_sem;
+	sem_t			*printf_sem;
 	sem_t			*stop_program_sem;
 	sem_t			*amt_philos_eat_enough_sem;
 	pthread_t		death_thread;
@@ -65,7 +65,6 @@ typedef struct s_philosopher
 	bool			check_death_thread_stopped;
 	bool			printing_thread_stopped;
 	bool			stop;
-	//				sem_t			*printable_head_sem;
 }	t_philosopher;
 
 
