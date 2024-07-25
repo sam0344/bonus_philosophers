@@ -1,6 +1,6 @@
 
 
-#include "philosophers2.h"
+#include "philosophers.h"
 
 // void print_text(t_philosopher *philosopher, char *str)
 // {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers2.h"
+#include "philosophers.h"
 
 void	ft_lst_remove_first_node(t_list **head)
 {

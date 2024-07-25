@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers2.h"
+#include "philosophers.h"
 
 int	parse_input(int argc, char *argv[], t_philosopher *philosopher)
 {

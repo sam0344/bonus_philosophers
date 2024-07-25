@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers2.h"
+#include "philosophers.h"
 
 static void	add_to_head(t_philosopher *philosopher, t_printable *printable)
 {

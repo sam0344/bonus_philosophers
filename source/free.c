@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers2.h"
+#include "philosophers.h"
 
 
 void close_semaphores(t_philosopher *philosopher)

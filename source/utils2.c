@@ -1,4 +1,4 @@
-#include "philosophers2.h"
+#include "philosophers.h"
 
 static int	ft_num_len(int n)
 {

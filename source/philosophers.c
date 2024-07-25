@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers2.h"
+#include "philosophers.h"
 
 void create_processes(t_philosopher *philosophers)
 {
