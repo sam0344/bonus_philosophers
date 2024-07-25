@@ -43,9 +43,8 @@ void add_to_printable(t_philosopher *philosopher, char *str)
 
 	printable = (t_printable *)malloc(sizeof(t_printable));
 	if (!printable)
-	{
 		printf("%ld %d %s\n", get_current_time() - philosopher->start_time, philosopher->id, str);
-	}
+	add_to_head(philosopher, printable);
 	printable->str = ft_strdup(str);
 	if (!printable->str)
 	{
@@ -53,7 +52,6 @@ void add_to_printable(t_philosopher *philosopher, char *str)
 		printf("%ld %d %s\n", get_current_time() - philosopher->start_time, philosopher->id, str);
 	}
 	printable->id = philosopher->id;
-	add_to_head(philosopher, printable);
 }
 
 void *print_printable_thread(void *arg)

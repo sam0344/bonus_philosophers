@@ -56,14 +56,23 @@ void	ft_usleep(ssize_t wait_time)
 		usleep(125);
 }
 
-void ft_error(char *str, int exit_code, t_philosopher *philosopher)
+void ft_error_parent(
+	char *str, int exit_code, t_philosopher *philosopher, int started_philos)
 {
+	int	i;
+
 	if (str)
 		write(2, str, ft_strlen(str));
+	if (philosopher->stop_program_sem)
+		sem_post(philosopher->stop_program_sem);
 	free_philosophers(philosopher);
+	i = 0;
+	while (i++ < started_philos)
+	{
+		waitpid(-1, NULL, 0);
+	}
 	exit(exit_code);
 }
-
 
 char	*ft_strdup(const char *s)
 {

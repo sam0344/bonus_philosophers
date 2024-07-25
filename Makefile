@@ -4,12 +4,12 @@ CFLAGS	:= -Wextra -Wall -Werror -g
 
 HEADERS	:= -I ./include
 # SRCDIR := src
-SRCDIR := src2
+SRCDIR := source
 
 OBJDIR := ./obj
 
 # SRCS  = ft_utils.c init.c philo_routine.c philosophers.c printing.c linked_list.c
-SRCS  = init.c philo_routine.c philosophers.c utils.c utils2.c free.c linked_list.c printing.c
+SRCS  = init.c philo_routine.c philosophers.c utils.c free.c linked_list.c printing.c
 
 # BSRCS =
 

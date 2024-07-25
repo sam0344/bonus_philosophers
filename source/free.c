@@ -19,6 +19,8 @@ void close_semaphores(t_philosopher *philosopher)
 	sem_unlink("printf_sem");
 	sem_unlink("stop_program_sem");
 	sem_unlink("amt_philos_eat_enough_sem");
+	// sem_unlink("philos_started_sem");
+	// sem_unlink("start_program_sem");
 	if (philosopher->forks_sem)
 		sem_close(philosopher->forks_sem);
 	if (philosopher->printf_sem)
@@ -29,6 +31,10 @@ void close_semaphores(t_philosopher *philosopher)
 		sem_close(philosopher->stop_program_sem);
 	if (philosopher->philo_sem)
 		sem_close(philosopher->philo_sem);
+	// if (philosopher->philos_started_sem)
+	// 	sem_close(philosopher->philo_sem);
+	// if (philosopher->start_program_sem)
+	// 	sem_close(philosopher->philo_sem);
 }
 
 void free_philosophers(t_philosopher *philosopher)

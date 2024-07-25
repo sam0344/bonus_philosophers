@@ -15,6 +15,7 @@
 void create_processes(t_philosopher *philosophers)
 {
 	int	i;
+	pid_t pid;
 	// char *pos_str;
 	// char *sem_name;
 
@@ -22,27 +23,21 @@ void create_processes(t_philosopher *philosophers)
 	philosophers->start_time = get_current_time();
 	while (i < philosophers->num_philosophers)
 	{
-		// pos_str = ft_itoa(i + 1);
-		// if (!pos_str)
-		// 	ft_error("failed itoa pos str\n", 1, philosophers);
-		// sem_name = ft_strjoin("philo_sem", pos_str);
-		// free(pos_str);
-		// if (!sem_name)
-		// 	ft_error("failed strjoin sem_name\n", 1, philosophers);
-		// printf("sem name:%s\n", sem_name);
-		// sem_unlink(sem_name);
-		// if (sem_unlink("philo_sem") < 0)
-		// 	printf("fail unlink\n");
+		sem_unlink("philo_sem");
+		if (errno != 0 && errno != ENOENT)
+			ft_error_parent("failed unlink semaphore", errno, philosophers, 0);
 		philosophers->philo_sem = sem_open("philo_sem", O_CREAT | O_EXCL, 0644, 1);
-		if (sem_unlink("philo_sem") < 0)
-			printf("fail unlink \n");
-		// free(sem_name);
 		if (philosophers->philo_sem == SEM_FAILED)
-			ft_error("failed to open philo_sem\n", 1, philosophers);
+		{
+			philosophers->philo_sem = NULL;
+			ft_error_parent("failed to open philo_sem\n", errno, philosophers, i);
+		}
 		philosophers->id = i + 1;
-		philosophers->pid[i] = fork();
-		if (philosophers->pid[i] == 0)
+		pid = fork();
+		if (pid == 0)
 			routine(philosophers);
+		else if (pid < 0)
+			ft_error_parent("failed fork\n", errno, philosophers, i);
 		sem_close(philosophers->philo_sem);
 		i++;
 	}
@@ -72,16 +67,12 @@ int main(int argc, char *argv[])
 	init_semaphores(philosophers);
 	philosophers->pid = malloc(sizeof(pid_t) * philosophers->num_philosophers);
 	if (!philosophers->pid)
-		ft_error("failed to allocate for pid", 1, philosophers);
+		ft_error_parent("failed to allocate for pid", 1, philosophers, 0);
 	create_processes(philosophers);
 	i = -1;
 	while (++i < philosophers->num_philosophers)
 		sem_wait(philosophers->amt_philos_eat_enough_sem);
 	sem_post(philosophers->stop_program_sem);
-	// i = -1;
-	// while (++i < philosophers->num_philosophers)
-	// 	sem_wait(philosophers->amt_threads_finished_sem);
-	// kill_processes(philosophers);
 	free_philosophers(philosophers);
 	return (0);
 }

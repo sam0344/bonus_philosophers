@@ -19,7 +19,6 @@ void *monitor_philo(void *arg)
 	while (1)
 	{
 		sem_wait(philosopher->philo_sem);
-		// printf("here2\n");
 		if (philosopher->stop)
 			break ;
 		if (get_current_time() - philosopher->last_meal_time > (ssize_t)philosopher->time_to_die)
@@ -100,8 +99,6 @@ void	routine(t_philosopher	*philosopher)
 	pthread_detach(check_philo_died);
 	pthread_create(&printing_thread, NULL, print_printable_thread, philosopher);
 	pthread_detach(printing_thread);
-	if (philosopher->id % 2 == 0)
-		ft_usleep(philosopher->time_to_eat);
 	while (1)
 	{
 		eat(philosopher);
@@ -117,6 +114,7 @@ void	routine(t_philosopher	*philosopher)
 					free_philosophers(philosopher);
 					exit(0);
 				}
+				sem_post(philosopher->philo_sem);
 				usleep(100);
 			}
 		}
@@ -125,7 +123,4 @@ void	routine(t_philosopher	*philosopher)
 		ft_usleep(philosopher->time_to_sleep);
 		think(philosopher);
 	}
-	// ft_usleep(philosopher->time_to_eat);
-	// sem_post(philosopher->stop_program_sem);
-	// return (arg);
 }
