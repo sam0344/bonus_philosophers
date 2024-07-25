@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILOSOPHERS2_H
-# define PHILOSOPHERS2_H
+#ifndef PHILOSOPHERS_H
+# define PHILOSOPHERS_H
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
