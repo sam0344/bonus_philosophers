@@ -82,6 +82,8 @@ void ft_usleep(ssize_t time_to_sleep);
 void free_philosophers(t_philosopher *philosopher);
 void ft_error_parent(
 	char *str, int exit_code, t_philosopher *philosopher, int started_philos);
+void ft_error_child(
+	char *str, int exit_code, t_philosopher *philosopher)
 char	*ft_strdup(const char *s);
 void add_to_printable(t_philosopher *philosopher, char *str);
 // char	*ft_itoa(int n);

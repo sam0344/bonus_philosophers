@@ -16,8 +16,6 @@ void create_processes(t_philosopher *philosophers)
 {
 	int	i;
 	pid_t pid;
-	// char *pos_str;
-	// char *sem_name;
 
 	i = 0;
 	philosophers->start_time = get_current_time();
@@ -42,17 +40,6 @@ void create_processes(t_philosopher *philosophers)
 		i++;
 	}
 	// printf("finished creation\n");
-}
-
-void kill_processes(t_philosopher *philosopher)
-{
-	int i;
-
-	i = -1;
-	while (++i < philosopher->num_philosophers)
-	{
-		kill(philosopher->pid[i], SIGTERM);
-	}
 }
 
 int main(int argc, char *argv[])

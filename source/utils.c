@@ -74,6 +74,27 @@ void ft_error_parent(
 	exit(exit_code);
 }
 
+void ft_error_child(
+	char *str, int exit_code, t_philosopher *philosopher)
+{
+
+	if (str)
+		write(2, str, ft_strlen(str));
+	if (philosopher->stop_program_sem)
+		sem_post(philosopher->stop_program_sem);
+	sem_post(philosopher->philo_sem);
+	while (1)
+	{
+		sem_wait(philosopher->philo_sem);
+		if (philosopher->moniter_thread_stopped && philosopher->printing_thread_stopped && philosopher->check_death_thread_stopped)
+		{
+			free_philosophers(philosopher);
+			exit(0);
+		}
+		sem_post(philosopher->philo_sem);
+		usleep(100);
+	}
+}
 char	*ft_strdup(const char *s)
 {
 	int		i;

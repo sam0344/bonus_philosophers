@@ -43,13 +43,13 @@ void add_to_printable(t_philosopher *philosopher, char *str)
 
 	printable = (t_printable *)malloc(sizeof(t_printable));
 	if (!printable)
-		printf("%ld %d %s\n", get_current_time() - philosopher->start_time, philosopher->id, str);
+		ft_error_child("failed to allocate memory", ENOMEM, philosopher);
 	add_to_head(philosopher, printable);
 	printable->str = ft_strdup(str);
 	if (!printable->str)
 	{
 		free(printable);
-		printf("%ld %d %s\n", get_current_time() - philosopher->start_time, philosopher->id, str);
+		ft_error_child("failed to allocate memory", ENOMEM, philosopher);
 	}
 	printable->id = philosopher->id;
 }
