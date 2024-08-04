@@ -12,54 +12,53 @@
 
 #include "philosophers.h"
 
-void create_processes(t_philosopher *philosophers)
+void	create_processes(t_philosopher *philosophers)
 {
-	int	i;
-	pid_t pid;
+	int		i;
 
-	i = 0;
+	i = -1;
 	philosophers->start_time = get_current_time();
-	while (i < philosophers->num_philosophers)
+	while (++i < philosophers->num_philosophers)
 	{
 		sem_unlink("philo_sem");
 		if (errno != 0 && errno != ENOENT)
 			ft_error_parent("failed unlink semaphore", errno, philosophers, 0);
-		philosophers->philo_sem = sem_open("philo_sem", O_CREAT | O_EXCL, 0644, 1);
+		philosophers->philo_sem = sem_open(
+				"philo_sem", O_CREAT | O_EXCL, 0644, 1);
 		if (philosophers->philo_sem == SEM_FAILED)
 		{
 			philosophers->philo_sem = NULL;
-			ft_error_parent("failed to open philo_sem\n", errno, philosophers, i);
+			ft_error_parent(
+				"failed to open philo_sem\n", errno, philosophers, i);
 		}
 		philosophers->id = i + 1;
-		pid = fork();
-		if (pid == 0)
-			routine(philosophers);
-		else if (pid < 0)
+		philosophers->pid = fork();
+		if (philosophers->pid == 0)
+			philo_start(philosophers);
+		else if (philosophers->pid < 0)
 			ft_error_parent("failed fork\n", errno, philosophers, i);
 		sem_close(philosophers->philo_sem);
-		i++;
 	}
-	// printf("finished creation\n");
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
 	t_philosopher	*philosophers;
-	int	i;
+	int				i;
 
 	philosophers = malloc(sizeof(t_philosopher));
 	if (!philosophers)
 		return (1);
 	parse_input(argc, argv, philosophers);
 	init_semaphores(philosophers);
-	philosophers->pid = malloc(sizeof(pid_t) * philosophers->num_philosophers);
-	if (!philosophers->pid)
-		ft_error_parent("failed to allocate for pid", 1, philosophers, 0);
 	create_processes(philosophers);
 	i = -1;
 	while (++i < philosophers->num_philosophers)
 		sem_wait(philosophers->amt_philos_eat_enough_sem);
 	sem_post(philosophers->stop_program_sem);
+	i = -1;
+	while (++i < philosophers->num_philosophers)
+		waitpid(-1, NULL, 0);
 	free_philosophers(philosophers);
 	return (0);
 }

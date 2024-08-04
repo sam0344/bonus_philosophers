@@ -19,10 +19,8 @@ static void	add_to_head(t_philosopher *philosopher, t_printable *printable)
 	printable_list = ft_lstnew(printable);
 	if (!printable_list)
 	{
-		printf("%ld %d %s\n", get_current_time() - philosopher->start_time, philosopher->id, printable->str);
-		free(printable->str);
 		free(printable);
-		return ;
+		ft_error_child("failed to allocate memory", ENOMEM, philosopher);
 	}
 	sem_wait(philosopher->philo_sem);
 	if (!philosopher->printable_head)
@@ -37,27 +35,45 @@ static void	add_to_head(t_philosopher *philosopher, t_printable *printable)
 	}
 }
 
-void add_to_printable(t_philosopher *philosopher, char *str)
+void	add_to_printable(t_philosopher *philosopher, char *str)
 {
-	t_printable *printable;
+	t_printable	*printable;
 
 	printable = (t_printable *)malloc(sizeof(t_printable));
 	if (!printable)
 		ft_error_child("failed to allocate memory", ENOMEM, philosopher);
-	add_to_head(philosopher, printable);
 	printable->str = ft_strdup(str);
 	if (!printable->str)
-	{
-		free(printable);
 		ft_error_child("failed to allocate memory", ENOMEM, philosopher);
-	}
 	printable->id = philosopher->id;
+	add_to_head(philosopher, printable);
 }
 
-void *print_printable_thread(void *arg)
+bool	print_printable(t_philosopher *philosopher)
+{
+	t_printable	*printable;
+
+	printable = philosopher->printable_head->content;
+	ft_lst_remove_first_node(&philosopher->printable_head);
+	if (philosopher->stop)
+	{
+		free(printable->str);
+		free(printable);
+		return (true);
+	}
+	sem_post(philosopher->philo_sem);
+	sem_wait(philosopher->printf_sem);
+	printf("%zd %d %s\n", get_current_time() - philosopher->start_time,
+		printable->id, printable->str);
+	sem_post(philosopher->printf_sem);
+	free(printable->str);
+	free(printable);
+	return (false);
+}
+
+void	*print_printable_thread(void *arg)
 {
 	t_philosopher	*philosopher;
-	t_printable		*printable;
 
 	philosopher = (t_philosopher *)arg;
 	while (1)
@@ -65,24 +81,13 @@ void *print_printable_thread(void *arg)
 		sem_wait(philosopher->philo_sem);
 		if (philosopher->printable_head)
 		{
-			printable = philosopher->printable_head->content;
-			ft_lst_remove_first_node(&philosopher->printable_head);
-			if (philosopher->stop)
-			{
-				free(printable->str);
-				free(printable);
-				break;
-			}
-			sem_post(philosopher->philo_sem);
-			sem_wait(philosopher->printf_sem);
-			printable->time_stamp = get_current_time() - philosopher->start_time;
-			printf("%zd %d %s\n", printable->time_stamp, printable->id, printable->str);\
-			sem_post(philosopher->printf_sem);
-			free(printable->str);
-			free(printable);
+			if (print_printable(philosopher))
+				break ;
 		}
 		else
 		{
+			if (philosopher->stop)
+				break ;
 			sem_post(philosopher->philo_sem);
 			usleep(100);
 		}

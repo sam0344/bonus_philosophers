@@ -12,15 +12,12 @@
 
 #include "philosophers.h"
 
-
-void close_semaphores(t_philosopher *philosopher)
+void	close_semaphores(t_philosopher *philosopher)
 {
 	sem_unlink("forks_sem");
 	sem_unlink("printf_sem");
 	sem_unlink("stop_program_sem");
 	sem_unlink("amt_philos_eat_enough_sem");
-	// sem_unlink("philos_started_sem");
-	// sem_unlink("start_program_sem");
 	if (philosopher->forks_sem)
 		sem_close(philosopher->forks_sem);
 	if (philosopher->printf_sem)
@@ -31,16 +28,12 @@ void close_semaphores(t_philosopher *philosopher)
 		sem_close(philosopher->stop_program_sem);
 	if (philosopher->philo_sem)
 		sem_close(philosopher->philo_sem);
-	// if (philosopher->philos_started_sem)
-	// 	sem_close(philosopher->philo_sem);
-	// if (philosopher->start_program_sem)
-	// 	sem_close(philosopher->philo_sem);
 }
 
-void free_philosophers(t_philosopher *philosopher)
+void	free_philosophers(t_philosopher *philosopher)
 {
-	t_printable *printable;
-	// free_philo_sems()
+	t_printable	*printable;
+
 	if (philosopher->pid)
 		free(philosopher->pid);
 	while (philosopher->printable_head)
@@ -54,24 +47,43 @@ void free_philosophers(t_philosopher *philosopher)
 	free(philosopher);
 }
 
-// void free_philo_sems(sem_t **philo_sems, int num_philosophers)
-// {
-// 	char *pos_str;
-// 	char *sem_name;
-// 	int	i;
-// 	i = 0;
-// 	while (i < num_philosophers)
-// 	{
-// 		pos_str = ft_itoa(i + 1);
-// 		if (!pos_str)
-// 			exit(1);
-// 		sem_name = ft_strjoin("philo_sem:", pos_str);
-// 		free(pos_str);
-// 		if (!sem_name)
-// 			exit(1);
-// 		unlink(sem_name);
-// 		free(sem_name);
-// 		sem_close(philo_sems[i]);
-// 		i++;
-// 	}
-// }
+void	ft_error_parent(
+	char *str, int exit_code, t_philosopher *philosopher, int started_philos)
+{
+	int	i;
+
+	if (str)
+		write(2, str, ft_strlen(str));
+	if (philosopher->stop_program_sem)
+		sem_post(philosopher->stop_program_sem);
+	free_philosophers(philosopher);
+	i = 0;
+	while (i++ < started_philos)
+	{
+		waitpid(-1, NULL, 0);
+	}
+	exit(exit_code);
+}
+
+void	ft_error_child(
+	char *str, int exit_code, t_philosopher *philosopher)
+{
+	if (str)
+		write(2, str, ft_strlen(str));
+	if (philosopher->stop_program_sem)
+		sem_post(philosopher->stop_program_sem);
+	sem_post(philosopher->philo_sem);
+	while (1)
+	{
+		sem_wait(philosopher->philo_sem);
+		if (philosopher->moniter_thread_stopped && \
+		philosopher->printing_thread_stopped && \
+		philosopher->check_death_thread_stopped)
+		{
+			free_philosophers(philosopher);
+			exit(exit_code);
+		}
+		sem_post(philosopher->philo_sem);
+		usleep(100);
+	}
+}

@@ -39,12 +39,39 @@ int	parse_input(int argc, char *argv[], t_philosopher *philosopher)
 	return (0);
 }
 
-void init_semaphores(t_philosopher *philosopher)
+void	init_semaphores2(t_philosopher *philosopher)
+{
+	sem_unlink("stop_program_sem");
+	if (errno != 0 && errno != ENOENT)
+		ft_error_parent("failed unlink semaphore", errno, philosopher, 0);
+	philosopher->stop_program_sem = sem_open(
+			"stop_program_sem", O_CREAT, 0644, 0);
+	if (philosopher->stop_program_sem == SEM_FAILED)
+	{
+		philosopher->stop_program_sem = NULL;
+		ft_error_parent(
+			"failed init stop program semaphore\n", errno, philosopher, 0);
+	}
+	sem_unlink("amt_philos_eat_enough_sem");
+	if (errno != 0 && errno != ENOENT)
+		ft_error_parent("failed unlink semaphore", errno, philosopher, 0);
+	philosopher->amt_philos_eat_enough_sem = sem_open(
+			"amt_philos_eat_enough_sem", O_CREAT, 0644, 0);
+	if (philosopher->amt_philos_eat_enough_sem == SEM_FAILED)
+	{
+		philosopher->amt_philos_eat_enough_sem = NULL;
+		ft_error_parent(
+			"failed init amt_enough_eaten semaphore\n", 1, philosopher, 0);
+	}
+}
+
+void	init_semaphores(t_philosopher *philosopher)
 {
 	sem_unlink("forks_sem");
 	if (errno != 0 && errno != ENOENT)
 		ft_error_parent("failed unlink semaphore", errno, philosopher, 0);
-	philosopher->forks_sem = sem_open("forks_sem", O_CREAT, 0644, philosopher->num_philosophers);
+	philosopher->forks_sem = sem_open(
+			"forks_sem", O_CREAT, 0644, philosopher->num_philosophers);
 	if (philosopher->forks_sem == SEM_FAILED)
 	{
 		philosopher->forks_sem = NULL;
@@ -57,42 +84,8 @@ void init_semaphores(t_philosopher *philosopher)
 	if (philosopher->printf_sem == SEM_FAILED)
 	{
 		philosopher->printf_sem = NULL;
-		ft_error_parent("failed init stop print semaphore\n", errno, philosopher, 0);
+		ft_error_parent(
+			"failed init stop print semaphore\n", errno, philosopher, 0);
 	}
-	sem_unlink("stop_program_sem");
-	if (errno != 0 && errno != ENOENT)
-		ft_error_parent("failed unlink semaphore", errno, philosopher, 0);
-	philosopher->stop_program_sem = sem_open("stop_program_sem", O_CREAT, 0644, 0);
-	if (philosopher->stop_program_sem == SEM_FAILED)
-	{
-		philosopher->stop_program_sem = NULL;
-		ft_error_parent("failed init stop program semaphore\n", errno, philosopher, 0);
-	}
-	sem_unlink("amt_philos_eat_enough_sem");
-	if (errno != 0 && errno != ENOENT)
-		ft_error_parent("failed unlink semaphore", errno, philosopher, 0);
-	philosopher->amt_philos_eat_enough_sem = sem_open("amt_philos_eat_enough_sem", O_CREAT, 0644, 0);
-	if (philosopher->amt_philos_eat_enough_sem == SEM_FAILED)
-	{
-		philosopher->amt_philos_eat_enough_sem = NULL;
-		ft_error_parent("failed init amt_enough_eaten semaphore\n", 1, philosopher, 0);
-	}
-	// sem_unlink("philos_started_sem");
-	// if (errno != 0 && errno != ENOENT)
-	// 	ft_error_parent("failed unlink semaphore", errno, philosopher, 0);
-	// philosopher->philos_started_sem = sem_open("philos_started_sem", O_CREAT, 0644, 0);
-	// if (philosopher->philos_started_sem == SEM_FAILED)
-	// {
-	// 	philosopher->philos_started_sem = NULL;
-	// 	ft_error_parent("failed init amt_enough_eaten semaphore\n", 1, philosopher, 0);
-	// }
-	// sem_unlink("start_program_sem");
-	// if (errno != 0 && errno != ENOENT)
-	// 	ft_error_parent("failed unlink semaphore", errno, philosopher, 0);
-	// philosopher->start_program_sem = sem_open("start_program_sem", O_CREAT, 0644, 0);
-	// if (philosopher->start_program_sem == SEM_FAILED)
-	// {
-	// 	philosopher->start_program_sem = NULL;
-	// 	ft_error_parent("failed init start program semaphore\n", 1, philosopher, 0);
-	// }
+	init_semaphores2(philosopher);
 }

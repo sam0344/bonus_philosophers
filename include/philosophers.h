@@ -24,7 +24,7 @@
 # include <semaphore.h>
 # include <fcntl.h>
 # include <signal.h>
-#include <errno.h>
+# include <errno.h>
 
 typedef struct s_list
 {
@@ -55,10 +55,8 @@ typedef struct s_philosopher
 	sem_t			*printf_sem;
 	sem_t			*stop_program_sem;
 	sem_t			*amt_philos_eat_enough_sem;
-	// sem_t			*philos_started_sem;
-	// sem_t			*start_program_sem;
 	pthread_t		death_thread;
-	pid_t			*pid;
+	pid_t			pid;
 	ssize_t			last_meal_time;
 	ssize_t			start_time;
 	int				id;
@@ -70,23 +68,20 @@ typedef struct s_philosopher
 	bool			stop;
 }	t_philosopher;
 
-
-
-int ft_strlen(const char *str);
-int	parse_input(int argc, char *argv[], t_philosopher *philosopher);
-void init_semaphores(t_philosopher *philosopher);
-int	ft_atoi(char *num);
+int		ft_strlen(const char *str);
+int		parse_input(int argc, char *argv[], t_philosopher *philosopher);
+void	init_semaphores(t_philosopher *philosopher);
+int		ft_atoi(char *num);
 ssize_t	get_current_time(void);
-void	routine(t_philosopher	*philosopher);
-void ft_usleep(ssize_t time_to_sleep);
-void free_philosophers(t_philosopher *philosopher);
-void ft_error_parent(
-	char *str, int exit_code, t_philosopher *philosopher, int started_philos);
-void ft_error_child(
-	char *str, int exit_code, t_philosopher *philosopher)
+void	philo_start(t_philosopher	*philosopher);
+void	ft_usleep(ssize_t time_to_sleep);
+void	free_philosophers(t_philosopher *philosopher);
+void	ft_error_parent(char	*str, int exit_code, \
+t_philosopher *philosopher, int started_philos);
+void	ft_error_child(
+			char	*str, int exit_code, t_philosopher *philosopher);
 char	*ft_strdup(const char *s);
-void add_to_printable(t_philosopher *philosopher, char *str);
-// char	*ft_itoa(int n);
-// char	*ft_strjoin(char const *s1, char const *s2);
+void	add_to_printable(t_philosopher *philosopher, char *str);
 void	*print_printable_thread(void *arg);
+void	*monitor_thread(void *arg);
 #endif

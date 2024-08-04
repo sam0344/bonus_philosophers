@@ -12,9 +12,9 @@
 
 #include "philosophers.h"
 
-int ft_strlen(const char *str)
+int	ft_strlen(const char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -56,45 +56,6 @@ void	ft_usleep(ssize_t wait_time)
 		usleep(125);
 }
 
-void ft_error_parent(
-	char *str, int exit_code, t_philosopher *philosopher, int started_philos)
-{
-	int	i;
-
-	if (str)
-		write(2, str, ft_strlen(str));
-	if (philosopher->stop_program_sem)
-		sem_post(philosopher->stop_program_sem);
-	free_philosophers(philosopher);
-	i = 0;
-	while (i++ < started_philos)
-	{
-		waitpid(-1, NULL, 0);
-	}
-	exit(exit_code);
-}
-
-void ft_error_child(
-	char *str, int exit_code, t_philosopher *philosopher)
-{
-
-	if (str)
-		write(2, str, ft_strlen(str));
-	if (philosopher->stop_program_sem)
-		sem_post(philosopher->stop_program_sem);
-	sem_post(philosopher->philo_sem);
-	while (1)
-	{
-		sem_wait(philosopher->philo_sem);
-		if (philosopher->moniter_thread_stopped && philosopher->printing_thread_stopped && philosopher->check_death_thread_stopped)
-		{
-			free_philosophers(philosopher);
-			exit(0);
-		}
-		sem_post(philosopher->philo_sem);
-		usleep(100);
-	}
-}
 char	*ft_strdup(const char *s)
 {
 	int		i;
