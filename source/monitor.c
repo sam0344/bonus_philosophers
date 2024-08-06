@@ -23,6 +23,7 @@ bool	check_philo_died(t_philosopher *philosopher)
 		printf("%ld %d %s\n",
 			get_current_time() - philosopher->start_time, \
 			philosopher->id, "died");
+		printf("\n\n\n\n\n\n\n\n\n\n");
 		i = -1;
 		while (++i < philosopher->num_philosophers)
 			sem_post(philosopher->amt_philos_eat_enough_sem);
@@ -34,7 +35,6 @@ bool	check_philo_died(t_philosopher *philosopher)
 void	*monitor_thread(void *arg)
 {
 	t_philosopher	*philosopher;
-	int				i;
 
 	philosopher = (t_philosopher *)arg;
 	while (1)

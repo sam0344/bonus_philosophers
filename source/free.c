@@ -34,8 +34,6 @@ void	free_philosophers(t_philosopher *philosopher)
 {
 	t_printable	*printable;
 
-	if (philosopher->pid)
-		free(philosopher->pid);
 	while (philosopher->printable_head)
 	{
 		printable = philosopher->printable_head->content;
